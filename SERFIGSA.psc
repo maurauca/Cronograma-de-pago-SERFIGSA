@@ -1,4 +1,4 @@
-SubProceso agregarCliente();
+SubProceso agregarCliente()
 	Definir nombre, cedula, numSeguro, departamento, fechaNacimiento, fechaRegistro, email, telefono como Cadena;
 	Escribir "========== Agregar Cliente ==========";
 	Escribir "Ingrese el nombre completo del cliente";
@@ -20,7 +20,7 @@ SubProceso agregarCliente();
 	Escribir "Cliente agregado exitosamente";
 FinSubProceso
 
-SubProceso editarCliente();
+SubProceso editarCliente()
 		Definir cedula, campo, nuevoValor como Cadena;
 		Definir encontrado como Logico;
 		encontrado <- Falso;
@@ -155,15 +155,15 @@ Proceso CronogramaPagoMicrofinanciera
 	Leer opc;
 	Segun opc Hacer
 		1:
-			agregarCliente();
+			agregarCliente()
 		2:
-			editarCliente();
+			editarCliente()
 		3:
-			eliminarCliente();
+			eliminarCliente()
 		4:
-			buscarCliente();
+			buscarCliente()
 		5:
-			mostrarClientes();
+			mostrarClientes()
 		6:
 			Escribir "¡Hasta luego!";
 		De Otro Modo:
