@@ -63,3 +63,19 @@ cout<<"Estado civil: "<< cliente[pos].estadoCiv << endl;
 cout<<"Email: "<<cliente[pos].email << endl;
 cout<<"Num de telefono: "<<cliente[pos].telef<<endl;
 }
+
+void updateClient(cliente cl, int pos){
+    cliente[pos] = client;
+}
+
+void deleteClient(int pos){
+    if (pos == lastReg){
+        cout << " No hay registro \n";
+        return;
+    }
+     for (int i = pos; i < lastReg - 1; i++){
+        client[i] = client [i + 1]; 
+     }
+     lastReg--;
+     startClient(lastReg);
+} 
