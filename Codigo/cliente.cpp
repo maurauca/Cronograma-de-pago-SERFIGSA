@@ -20,10 +20,10 @@ typedef struct
     char estadoCiv[30];
     char email[100];
     int telef[8];
-}cliente;
+}cliente ;
 
 cliente client[MAX];
-int ultRegis = 0;
+int lastReg = 0;
 
 //Funciones CRUD
 
@@ -50,4 +50,16 @@ void saveClientes();
 void readClientes();
 int calcLastReg(FILE *archivo);
 
+void addClient(cliente cl){
+   cliente[lastReg]=cl;
+   lastReg++;
+}
 
+void showClient(int pos){
+cout<<"Nombre: "<<cliente[pos].nombre<<endl;
+cout<<"apellidos: "<<cliente[pos].apellido<<endl;
+cout<<"Cedula: "<< cliente[pos].cedula <<endl;
+cout<<"Estado civil: "<< cliente[pos].estadoCiv << endl;
+cout<<"Email: "<<cliente[pos].email << endl;
+cout<<"Num de telefono: "<<cliente[pos].telef<<endl;
+}
