@@ -32,7 +32,7 @@ void addClient(cliente cl);
 // READ
 void showClient(int pos);
 void showClients();
-int isClient(char id[]);
+int isClient(char cedula[]);
 void startClient(int pos);
 cliente getClient(int pos);
 // UPDATE
@@ -66,6 +66,24 @@ void showClient(int pos)
     cout << "Num de telefono: " << client[pos].telef << endl;
 }
 
+int isClient(char cedula[])
+{
+    int posicion = 0;
+    for (int i = 0; i < lastReg; i++)
+    {
+        if (strcmp(cedula, client[i].cedula) == 0)
+        {
+            posicion = i;
+            break;
+        }
+    }
+}
+
+cliente getClient(int pos)
+{
+    return client[pos];
+}
+
 void updateClient(cliente cl, int pos)
 {
     client[pos] = cl;
@@ -75,7 +93,7 @@ void deleteClient(int pos)
 {
     if (pos == lastReg)
     {
-        cout << " No hay registro \n";
+        cout << " No hay registro de este cliente. Intente de nuevo por favor. \n";
         return;
     }
     for (int i = pos; i < lastReg - 1; i++)
@@ -84,4 +102,19 @@ void deleteClient(int pos)
     }
     lastReg--;
     startClient(lastReg);
+}
+
+void showClients(){
+    system("cls");
+
+    if (lastReg == 0){
+        cout << "No existe un registro de este cliente. Intente de nuevo \n";
+        return;
+    }
+    for (int i = 0; i < lastReg; i++)
+    {
+        cout << "+++++++++++++++++++++++++++++++++++\n";
+        showClient(i);
+    }
+    cout << "Ultimo registro... \n";
 }
