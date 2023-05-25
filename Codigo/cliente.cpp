@@ -5,6 +5,7 @@
 #define MAX 80
 using namespace std;
 
+// estructura fecha
 typedef struct
 {
     int dia;
@@ -12,6 +13,17 @@ typedef struct
     int ano;
 } fecha;
 
+// estructura solicitud
+typedef struct
+{
+    char cedula;
+    int monto;
+    char producto;
+    int frecuencia;
+    fecha pago;
+} solicitud;
+
+// estructura datos personales de cliente
 typedef struct
 {
     char nombre[30];
@@ -27,20 +39,29 @@ typedef struct
 cliente client[MAX];
 int lastReg = 0;
 
+solicitud soli[MAX];
+int lastSolicitud = 0;
+
 // Funciones CRUD
 
 // CREATE
 void addClient(cliente cl);
+void addSolicitud(solicitud sol);
 // READ
 void showClient(int pos);
+void showSolicitud(int pos);
 void showClients();
+void showSolicitudes();
 int isClient(char cedula[]);
+int isSolicitud(char cedula[]);
 void startClient(int pos);
 cliente getClient(int pos);
 // UPDATE
 void updateClient(cliente cl, int pos);
+void updateSolicitud(solicitud soli, int pos);
 // DELETE
 void deleteClient(int pos);
+void deleteSolicitud(int pos);
 
 // OPCIONES
 int menu();
@@ -52,10 +73,44 @@ void saveClientes();
 void readClientes();
 int calcLastReg(FILE *archivo);
 
+void saveClientes()
+{
+    registroCliente = fopen("datoscliente.bin", "wb");
+    fwrite(client, sizeof(cliente), lastReg, registroCliente);
+    fclose(registroCliente);
+}
+
+void readClientes()
+{
+    registroCliente = fopen("datoscliente.bin", "rb");
+    if (registroCliente == NULL)
+    {
+        return;
+    }
+    lastReg = calcLastReg(registroCliente);
+    fread(client, sizeof(cliente), MAX, registroCliente);
+    fclose(registroCliente);
+}
+
+int calcLastReg(FILE *archivo)
+{
+    int size, num;
+    fseek(archivo, 0, SEEK_END);
+    size = ftell(archivo);
+    rewind(archivo);
+    num = size / sizeof(cliente);
+    return num;
+}
+
 void addClient(cliente cl)
 {
     client[lastReg] = cl;
     lastReg++;
+}
+void addSolicitud(solicitud sol)
+{
+    soli[lastSolicitud] = sol;
+    lastSolicitud++;
 }
 
 void showClient(int pos)
@@ -66,6 +121,15 @@ void showClient(int pos)
     cout << "Estado civil: " << client[pos].estadoCiv << endl;
     cout << "Email: " << client[pos].email << endl;
     cout << "Num de telefono: " << client[pos].telef << endl;
+}
+
+void showSolicitud(int pos)
+{
+    cout << "Cedula: " << soli[pos].cedula << endl;
+    cout << "Monto: " << soli[pos].monto << endl;
+    cout << "Producto: " << soli[pos].producto << endl;
+    cout << "Frecuencia: " << soli[pos].frecuencia << endl;
+    cout << "Fecha de pago: " << soli[pos].pago.dia << "/" << soli[pos].pago.mes << "/" << soli[pos].pago.ano << endl;
 }
 
 int isClient(char cedula[])
@@ -81,6 +145,19 @@ int isClient(char cedula[])
     }
 }
 
+int isSolicitud(char cedula[])
+{
+    for (int i = 0; i < lastSolicitud; i++)
+    {
+        if (strcmp(cedula, soli[i].cedula) == 0)
+        {
+            return i;
+        }
+        
+    }
+    return -1; 
+}
+
 cliente getClient(int pos)
 {
     return client[pos];
@@ -89,6 +166,10 @@ cliente getClient(int pos)
 void updateClient(cliente cl, int pos)
 {
     client[pos] = cl;
+}
+
+void updateSolicitud(solicitud sol, int pos){
+    soli[pos] = sol;
 }
 
 void deleteClient(int pos)
@@ -106,6 +187,24 @@ void deleteClient(int pos)
     startClient(lastReg);
 }
 
+void deleteSoli(int pos)
+{
+    if (pos == lastSolicitud)
+    {
+        cout << "No encontramos el registro de esta solicitud. Intente nuevamente." << endl;
+        return;
+    }
+
+    for (int i = pos; i < lastSolicitud; i++)
+    {
+        soli[i] = soli[i+1];
+    }
+    lastSolicitud--;
+    cout << "Solicitud eliminada correctamente. " << endl;
+    
+    
+}
+
 void showClients()
 {
     system("cls");
@@ -121,6 +220,21 @@ void showClients()
         showClient(i);
     }
     cout << "Ultimo registro... \n";
+}
+
+void showSolicitudes()
+{
+    system("cls");
+    if (lastSolicitud == 0)
+    {
+        cout << "No hay solicitudes registradas." << endl;
+        return;
+    }
+    for (int i = 0; i < lastSolicitud; i++)
+    {
+        cout << "Solicitud" << i + 1 << ":" << endl;
+        showSolicitud(i);
+    }
 }
 
 void startClient(int pos)
@@ -240,7 +354,7 @@ void start()
             }
             system("pause");
             break;
-        
+
         case 4:
             system("cls||clear");
             cout << "Escriba la cedula del cliente a buscar: " << endl;
@@ -249,13 +363,13 @@ void start()
             showClient(pos);
             system("pause");
             break;
-        
+
         case 5:
             system("cls||clear");
             showClients();
             system("pause");
             break;
-        
+
         case 6:
             cout << "Gracias por usar nuestros servicios!" << endl;
             break;
@@ -268,30 +382,4 @@ void start()
         }
     } while (op != 6);
     saveClientes();
-}
-
-void saveClientes(){
-    registroCliente = fopen("datoscliente.bin", "wb");
-    fwrite(client, sizeof(cliente), lastReg, registroCliente);
-    fclose(registroCliente);
-}
-
-void readClientes(){
-    registroCliente = fopen("datoscliente.bin", "rb");
-    if (registroCliente == NULL)
-    {
-        return;
-    }
-    lastReg = calcLastReg(registroCliente);
-    fread(client, sizeof(cliente), MAX, registroCliente);
-    fclose(registroCliente);
-}
-
-int calcLastReg(FILE *archivo){
-    int size, num;
-    fseek(archivo, 0, SEEK_END);
-    size = ftell(archivo);
-    rewind(archivo);
-    num = size / sizeof(cliente);
-    return num;
 }
